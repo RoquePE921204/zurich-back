@@ -76,7 +76,7 @@ class ClientControllerIntegrationTest {
         mockMvc.perform(post("/client").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result").value(true));;
+                .andExpect(jsonPath("$.result").value(true));
     }
 
     @Test
@@ -89,6 +89,17 @@ class ClientControllerIntegrationTest {
         mockMvc.perform(put("/client").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result").value(true));;
+                .andExpect(jsonPath("$.result").value(true));
+    }
+
+    @Test
+    void testDeleteClient() throws Exception {
+        String clientId = service.getClientList().get(0).getId();
+        ReadDeleteRequest request = new ReadDeleteRequest();
+        request.setId(clientId);
+        mockMvc.perform(delete("/client").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").value(true));
     }
 }

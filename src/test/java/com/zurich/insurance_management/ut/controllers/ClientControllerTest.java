@@ -105,4 +105,17 @@ class ClientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(true));
     }
+
+    @Test
+    void testDeleteClient() throws Exception {
+        ReadDeleteRequest request = new ReadDeleteRequest();
+        request.setId("1234567890");
+        CommonResponse response = new CommonResponse(true);
+        when(service.deleteClient("1234567890")).thenReturn(response);
+
+        mockMvc.perform(delete("/client").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").value(true));
+    }
 }
