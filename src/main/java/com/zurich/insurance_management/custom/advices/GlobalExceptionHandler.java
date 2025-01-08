@@ -1,6 +1,7 @@
 package com.zurich.insurance_management.custom.advices;
 
 import com.zurich.insurance_management.custom.exceptions.GeneralControlledException;
+import com.zurich.insurance_management.responses.GlobalExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,22 +17,22 @@ import java.util.regex.Pattern;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<GlobalExceptionResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GlobalExceptionResponse(errors));
     }
 
     @ExceptionHandler(GeneralControlledException.class)
-    public ResponseEntity<String> handleIllegalStateException(GeneralControlledException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(ex.getMessage());
+    public ResponseEntity<GlobalExceptionResponse> handleGlobalException(GeneralControlledException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new GlobalExceptionResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException(Exception ex) {
+    public ResponseEntity<GlobalExceptionResponse> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Oops, no esperábamos eso, por favor contacte con el administrador.");
+                .body(new GlobalExceptionResponse("Oops, no esperábamos eso, por favor contacte con el administrador."));
     }
 
     private static String extractValue(String errorMessage) {

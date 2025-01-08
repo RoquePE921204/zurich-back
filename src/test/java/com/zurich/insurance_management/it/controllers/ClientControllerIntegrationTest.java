@@ -5,7 +5,6 @@ import com.zurich.insurance_management.controllers.ClientController;
 import com.zurich.insurance_management.repository.ClientRepository;
 import com.zurich.insurance_management.requests.ClientRequest;
 import com.zurich.insurance_management.requests.ReadDeleteRequest;
-import com.zurich.insurance_management.responses.CommonResponse;
 import com.zurich.insurance_management.service.ClientService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,7 +49,8 @@ class ClientControllerIntegrationTest {
     void testGetClientList() throws Exception {
         mockMvc.perform(get("/client/list").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(Matchers.greaterThan(0)));;
+                .andExpect(jsonPath("$.length()").value(Matchers.greaterThan(0)));
+        ;
     }
 
     @Test

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class ReadDeleteRequest implements Serializable {
 
 	@NotNull(message = "El identificador es obligatorio")
 	@Pattern(regexp = "\\d{10}", message = "El identificador debe contener exactamente 10 dígitos")
+	@Schema(description = "Unique identifier for read or delete operations (must contain 10 digits)", example = "1234567890")
 	private String id;
 
 }

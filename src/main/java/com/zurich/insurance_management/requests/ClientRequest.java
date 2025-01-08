@@ -23,23 +23,23 @@ public class ClientRequest implements Serializable {
 
     @NotNull(groups = RequiredGroup.class, message = "El identificador es obligatorio")
     @Pattern(regexp = "\\d{10}", groups = RequiredGroup.class, message = "El identificador debe contener exactamente 10 dígitos")
-    @Schema(description = "El identificador único del cliente (debe contener 10 dígitos)", example = "1234567890")
+    @Schema(description = "Unique client identifier (must contain 10 digits)", example = "1234567890")
     private String id;
 
-    @Schema(description = "El identificador del usuario asociado al cliente", example = "123456")
+    @Schema(description = "User identifier associated with the client", example = "123456")
     private Long userId;
 
     @NotBlank(message = "El nombre completo es requerido")
     @Pattern(regexp = "^[A-Za-záéíóúÁÉÍÓÚñÑ\\s]+$", message = "El nombre no debe contener números ni caracteres especiales")
-    @Schema(description = "El nombre completo del cliente", example = "Roque Roque")
+    @Schema(description = "The client's full name", example = "Roque Roque")
     private String fullName;
 
     @NotNull(message = "El email es obligatorio")
     @Email(message = "El email debe ser válido")
-    @Schema(description = "El correo electrónico del cliente", example = "roque@example.com")
+    @Schema(description = "The client's email address", example = "roque@example.com")
     private String email;
 
     @NotBlank(message = "El teléfono es requerido")
-    @Schema(description = "El teléfono de contacto del cliente", example = "1234567890")
+    @Schema(description = "The client's contact phone number", example = "1234567890")
     private String telephone;
 }

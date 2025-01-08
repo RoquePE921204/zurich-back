@@ -12,16 +12,13 @@ import com.zurich.insurance_management.entities.Client;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-	@Query("SELECT c FROM Client c WHERE c.id = :id")
-	Optional<Client> findByIdWithLock(@Param("id") Long id);
-
-	boolean existsById(Long id);
+    @Query("SELECT c FROM Client c WHERE c.userId = :id")
+    Optional<Client> findByUserId(@Param("id") Long id);
 
 	boolean existsByEmail(String email);
 
 	@Query("SELECT CASE WHEN COUNT(c) > 0 THEN TRUE ELSE FALSE END " +
 			"FROM Client c WHERE c.email = :email AND c.id != :id")
 	boolean existsByEmailAndNotId(@Param("email") String email, @Param("id") Long id);
-
 
 }

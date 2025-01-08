@@ -1,13 +1,13 @@
 package com.zurich.insurance_management.controllers;
 
-import com.zurich.insurance_management.requests.ClientRequest;
+import com.zurich.insurance_management.requests.InsuranceRequest;
 import com.zurich.insurance_management.requests.ReadDeleteRequest;
 import com.zurich.insurance_management.requests.groups.OptionalGroup;
 import com.zurich.insurance_management.requests.groups.RequiredGroup;
-import com.zurich.insurance_management.responses.ClientResponse;
 import com.zurich.insurance_management.responses.CommonResponse;
 import com.zurich.insurance_management.responses.GlobalExceptionResponse;
-import com.zurich.insurance_management.service.ClientService;
+import com.zurich.insurance_management.responses.InsuranceResponse;
+import com.zurich.insurance_management.service.InsuranceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,28 +21,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "client")
-@Tag(name = "Client", description = "Operations related to clients")
+@RequestMapping(value = "insurance")
+@Tag(name = "Insurance", description = "Operations related to insurances")
 @CrossOrigin(allowCredentials = "true", origins = "http://localhost:4200"
         , methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-public class ClientController {
+public class InsuranceController {
 
     @Autowired
-    private ClientService service;
+    private InsuranceService service;
 
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get list of all clients", description = "Fetches the list of all clients in the system.")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of clients")
+    @Operation(summary = "Get list of insurances", description = "Returns a list of insurances based on a given ID.")
+    @ApiResponse(responseCode = "200", description = "List of insurances retrieved successfully")
+    @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
+            , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public List<ClientResponse> getClientList() {
-        return this.service.getClientList();
+    public List<InsuranceResponse> getInsuranceList(@RequestBody ReadDeleteRequest request) {
+        return this.service.getInsuranceList(request);
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get a specific client by ID", description = "Fetches a client based on the provided ID.")
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved the client")
+    @Operation(summary = "Get a specific insurance by ID", description = "Returns the insurance object for the provided ID.")
+    @ApiResponse(responseCode = "200", description = "Insurance retrieved successfully")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ApiResponse(responseCode = "406", description = "Controlled error: See the description"
@@ -50,13 +52,13 @@ public class ClientController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public ClientResponse gettClient(@RequestBody ReadDeleteRequest request) {
-        return this.service.getClient(request.getId());
+    public InsuranceResponse getInsurance(@RequestBody ReadDeleteRequest request) {
+        return this.service.getInsurance(request.getId());
     }
 
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create a new client", description = "Creates a new client with the provided data.")
-    @ApiResponse(responseCode = "200", description = "Client successfully created")
+    @Operation(summary = "Create a new insurance", description = "Creates a new insurance record.")
+    @ApiResponse(responseCode = "200", description = "Insurance created successfully")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ApiResponse(responseCode = "406", description = "Controlled error: See the description"
@@ -64,13 +66,13 @@ public class ClientController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse createClient(@Validated(OptionalGroup.class) @RequestBody ClientRequest request) {
-        return this.service.createClient(request);
+    public CommonResponse createInsurance(@Validated(OptionalGroup.class) @RequestBody InsuranceRequest request) {
+        return this.service.createInsurance(request);
     }
 
     @PutMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update an existing client", description = "Updates the details of an existing client.")
-    @ApiResponse(responseCode = "200", description = "Client successfully updated")
+    @Operation(summary = "Update an existing insurance", description = "Updates an existing insurance record.")
+    @ApiResponse(responseCode = "200", description = "Insurance updated successfully")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ApiResponse(responseCode = "406", description = "Controlled error: See the description"
@@ -78,19 +80,20 @@ public class ClientController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse updateClient(@Validated(RequiredGroup.class) @RequestBody ClientRequest request) {
-        return this.service.updateClient(request, false);
+    public CommonResponse updateInsurance(@Validated(RequiredGroup.class) @RequestBody InsuranceRequest request) {
+        return this.service.updateInsurance(request, false);
     }
 
     @DeleteMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete a specific client by ID", description = "Delete a client based on the provided ID.")
-    @ApiResponse(responseCode = "200", description = "Client successfully deleted")
+    @Operation(summary = "Delete an existing insurance", description = "Deletes an existing insurance record by ID.")
+    @ApiResponse(responseCode = "200", description = "Insurance deleted successfully")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse deletetClient(@RequestBody ReadDeleteRequest request) {
-        return this.service.deleteClient(request.getId());
+    public CommonResponse deleteClient(@RequestBody ReadDeleteRequest request) {
+        return this.service.deleteInsurance(request.getId());
     }
+
 }

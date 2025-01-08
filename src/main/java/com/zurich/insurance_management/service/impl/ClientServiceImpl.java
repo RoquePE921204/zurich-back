@@ -82,7 +82,21 @@ public class ClientServiceImpl implements ClientService {
 
 	private Long generateUniqueId() {
 		Random rand = new Random();
-		return 1000000000L + (long) (rand.nextDouble() * 8999999999L);
+		Long id = null;
+		boolean exists = true;
+		int tries = 0;
+
+		while (exists) {
+			id = 1000000000L + (long) (rand.nextDouble() * 8999999999L);
+			exists = repository.existsById(id);
+			if (exists && tries >= 3) {
+				exists = false;
+			} else if (exists) {
+				tries++;
+			}
+		}
+
+		return id;
 	}
 
 }
