@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ValidExpirationDate
 public class InsuranceRequest implements Serializable {
 
     private static final long serialVersionUID = -3529677921542092034L;
@@ -50,7 +51,6 @@ public class InsuranceRequest implements Serializable {
     @NotNull(message = "La fecha de expiración es obligatoria")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Future(message = "La fecha de expiración debe ser una fecha futura")
-    @ValidExpirationDate
     @Schema(description = "Expiration date of insurance coverage (must be a future date)", example = "2026-01-01")
     private LocalDate expirationDate;
 }

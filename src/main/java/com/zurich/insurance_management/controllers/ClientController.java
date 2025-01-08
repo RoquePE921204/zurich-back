@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.groups.Default;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -65,7 +66,7 @@ public class ClientController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse createClient(@Validated(OptionalGroup.class) @RequestBody ClientRequest request) {
+    public CommonResponse createClient(@Validated({Default.class, OptionalGroup.class}) @RequestBody ClientRequest request) {
         return this.service.createClient(request);
     }
 
@@ -79,7 +80,7 @@ public class ClientController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse updateClient(@Validated(RequiredGroup.class) @RequestBody ClientRequest request) {
+    public CommonResponse updateClient(@Validated({Default.class, RequiredGroup.class}) @RequestBody ClientRequest request) {
         return this.service.updateClient(request, false);
     }
 

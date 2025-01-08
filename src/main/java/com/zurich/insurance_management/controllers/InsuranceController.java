@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.groups.Default;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -68,7 +69,7 @@ public class InsuranceController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse createInsurance(@Validated(OptionalGroup.class) @RequestBody InsuranceRequest request) {
+    public CommonResponse createInsurance(@Validated({Default.class, OptionalGroup.class}) @RequestBody InsuranceRequest request) {
         return this.service.createInsurance(request);
     }
 
@@ -82,7 +83,7 @@ public class InsuranceController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse updateInsurance(@Validated(RequiredGroup.class) @RequestBody InsuranceRequest request) {
+    public CommonResponse updateInsurance(@Validated({Default.class, RequiredGroup.class}) @RequestBody InsuranceRequest request) {
         return this.service.updateInsurance(request, false);
     }
 
