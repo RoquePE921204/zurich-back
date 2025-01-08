@@ -2,13 +2,11 @@ package com.zurich.insurance_management.it.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.zurich.insurance_management.controllers.ClientController;
 import com.zurich.insurance_management.controllers.InsuranceController;
 import com.zurich.insurance_management.repository.ClientRepository;
 import com.zurich.insurance_management.repository.InsuranceRepository;
 import com.zurich.insurance_management.requests.ClientRequest;
 import com.zurich.insurance_management.requests.InsuranceRequest;
-import com.zurich.insurance_management.requests.ReadDeleteRequest;
 import com.zurich.insurance_management.service.ClientService;
 import com.zurich.insurance_management.service.InsuranceService;
 import org.hamcrest.Matchers;
@@ -20,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 
@@ -50,6 +47,7 @@ class InsuranceControllerIntegrationTest {
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
     private String clientId;
+    private String insuranceId;
 
     @BeforeEach
     void setUp() {
@@ -62,29 +60,26 @@ class InsuranceControllerIntegrationTest {
         clienteService.updateClient(clientRequeest, true);
         this.clientId = clienteService.getClientList().get(0).getId();
 
-        InsuranceRequest request = new InsuranceRequest("1234567891",clientId,"Vida",10203.00, LocalDate.now(), LocalDate.now().plusYears(1));
+        InsuranceRequest request = new InsuranceRequest("1234567891", clientId, "Vida", 10203.00, LocalDate.now(), LocalDate.now().plusYears(1));
         repository.deleteAll();
         service.updateInsurance(request, true);
+        this.insuranceId = service.getInsuranceList(this.clientId).get(0).getId();
     }
 
     @Test
     void testGetInsuranceList() throws Exception {
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId(clientId);
-
-        mockMvc.perform(get("/insurance/list").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(get("/insurance/list/" + clientId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(Matchers.greaterThan(0)));;
+                .andExpect(jsonPath("$.length()").value(Matchers.greaterThan(0)));
+        ;
     }
 
     @Test
     void testGetInsurance() throws Exception {
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId("1234567891");
-
-        mockMvc.perform(get("/insurance").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))).andExpect(status().isOk())
+        mockMvc.perform(get("/insurance/" + insuranceId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.clientId").isNotEmpty())
                 .andExpect(jsonPath("$.type").isNotEmpty())
@@ -126,10 +121,8 @@ class InsuranceControllerIntegrationTest {
 
     @Test
     void testDeleteClient() throws Exception {
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId("1234567891");
-        mockMvc.perform(delete("/insurance").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(delete("/insurance/" + insuranceId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(true));
     }

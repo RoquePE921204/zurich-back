@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zurich.insurance_management.controllers.ClientController;
 import com.zurich.insurance_management.repository.ClientRepository;
 import com.zurich.insurance_management.requests.ClientRequest;
-import com.zurich.insurance_management.requests.ReadDeleteRequest;
 import com.zurich.insurance_management.service.ClientService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,14 +56,14 @@ class ClientControllerIntegrationTest {
     void testGetClient() throws Exception {
         String clientId = service.getClientList().get(0).getId();
         String fullName = service.getClientList().get(0).getFullName();
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId(clientId);
-        mockMvc.perform(get("/client").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+
+        mockMvc.perform(get("/client/" + clientId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(clientId))
                 .andExpect(jsonPath("$.fullName").value(fullName));
     }
+
 
     @Test
     void testCreateClient() throws Exception {
@@ -93,11 +92,10 @@ class ClientControllerIntegrationTest {
 
     @Test
     void testDeleteClient() throws Exception {
-        String clientId = service.getClientList().get(0).getId();
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId(clientId);
-        mockMvc.perform(delete("/client").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        String clientId = "1234567890";
+
+        mockMvc.perform(delete("/client/" + clientId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(true));
     }

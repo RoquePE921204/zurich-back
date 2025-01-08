@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.zurich.insurance_management.controllers.InsuranceController;
 import com.zurich.insurance_management.requests.InsuranceRequest;
-import com.zurich.insurance_management.requests.ReadDeleteRequest;
 import com.zurich.insurance_management.responses.ClientResponse;
 import com.zurich.insurance_management.responses.CommonResponse;
 import com.zurich.insurance_management.responses.InsuranceResponse;
@@ -55,9 +54,6 @@ class InsuranceControllerTest {
         clientId = "1234567890";
         insuranceId = "1234567891";
 
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId(clientId);
-
         ClientResponse clientResponse = new ClientResponse();
         clientResponse.setId(clientId);
         clientResponse.setFullName("Roque Roque");
@@ -73,28 +69,21 @@ class InsuranceControllerTest {
         insuranceResponse.setExpirationDate(LocalDate.now().plusYears(1));
 
         when(clientService.getClientList()).thenReturn(List.of(clientResponse));
-        when(insuranceService.getInsuranceList(request)).thenReturn(List.of(insuranceResponse));
+        when(insuranceService.getInsuranceList(clientId)).thenReturn(List.of(insuranceResponse));
     }
 
     @Test
     void testGetInsuranceList() throws Exception {
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId(clientId);
-
-        mockMvc.perform(get("/insurance/list")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(get("/insurance/list/" + clientId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
 
-        verify(insuranceService, times(1)).getInsuranceList(request);
+        verify(insuranceService, times(1)).getInsuranceList(clientId);
     }
 
     @Test
     void testGetInsurance() throws Exception {
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId(insuranceId);
-
         InsuranceResponse insuranceResponse = new InsuranceResponse();
         insuranceResponse.setId(insuranceId);
         insuranceResponse.setClientId(clientId);
@@ -105,9 +94,8 @@ class InsuranceControllerTest {
 
         when(insuranceService.getInsurance(insuranceId)).thenReturn(insuranceResponse);
 
-        mockMvc.perform(get("/insurance")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(get("/insurance/" + insuranceId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(insuranceId))
                 .andExpect(jsonPath("$.clientId").value(clientId))
@@ -163,15 +151,11 @@ class InsuranceControllerTest {
 
     @Test
     void testDeleteInsurance() throws Exception {
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId(insuranceId);
-
         CommonResponse response = new CommonResponse(true);
         when(insuranceService.deleteInsurance(insuranceId)).thenReturn(response);
 
-        mockMvc.perform(delete("/insurance")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(delete("/insurance/" + insuranceId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(true));
 

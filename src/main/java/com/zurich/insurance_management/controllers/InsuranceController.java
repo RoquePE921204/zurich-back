@@ -1,7 +1,6 @@
 package com.zurich.insurance_management.controllers;
 
 import com.zurich.insurance_management.requests.InsuranceRequest;
-import com.zurich.insurance_management.requests.ReadDeleteRequest;
 import com.zurich.insurance_management.requests.groups.OptionalGroup;
 import com.zurich.insurance_management.requests.groups.RequiredGroup;
 import com.zurich.insurance_management.responses.CommonResponse;
@@ -13,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +30,7 @@ public class InsuranceController {
     @Autowired
     private InsuranceService service;
 
-    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "list/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get list of insurances", description = "Returns a list of insurances based on a given ID.")
     @ApiResponse(responseCode = "200", description = "List of insurances retrieved successfully")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
@@ -38,11 +38,12 @@ public class InsuranceController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public List<InsuranceResponse> getInsuranceList(@RequestBody ReadDeleteRequest request) {
-        return this.service.getInsuranceList(request);
+    public List<InsuranceResponse> getInsuranceList(@PathVariable @Pattern(regexp = "\\d{10}"
+            , message = "El identificador debe contener exactamente 10 dígitos") String id) {
+        return this.service.getInsuranceList(id);
     }
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a specific insurance by ID", description = "Returns the insurance object for the provided ID.")
     @ApiResponse(responseCode = "200", description = "Insurance retrieved successfully")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
@@ -52,8 +53,9 @@ public class InsuranceController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public InsuranceResponse getInsurance(@RequestBody ReadDeleteRequest request) {
-        return this.service.getInsurance(request.getId());
+    public InsuranceResponse getInsurance(@PathVariable @Pattern(regexp = "\\d{10}"
+            , message = "El identificador debe contener exactamente 10 dígitos") String id) {
+        return this.service.getInsurance(id);
     }
 
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,7 +86,7 @@ public class InsuranceController {
         return this.service.updateInsurance(request, false);
     }
 
-    @DeleteMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Delete an existing insurance", description = "Deletes an existing insurance record by ID.")
     @ApiResponse(responseCode = "200", description = "Insurance deleted successfully")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
@@ -92,8 +94,9 @@ public class InsuranceController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse deleteClient(@RequestBody ReadDeleteRequest request) {
-        return this.service.deleteInsurance(request.getId());
+    public CommonResponse deleteClient(@PathVariable @Pattern(regexp = "\\d{10}"
+            , message = "El identificador debe contener exactamente 10 dígitos") String id) {
+        return this.service.deleteInsurance(id);
     }
 
 }

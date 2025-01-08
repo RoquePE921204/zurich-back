@@ -1,7 +1,6 @@
 package com.zurich.insurance_management.controllers;
 
 import com.zurich.insurance_management.requests.ClientRequest;
-import com.zurich.insurance_management.requests.ReadDeleteRequest;
 import com.zurich.insurance_management.requests.groups.OptionalGroup;
 import com.zurich.insurance_management.requests.groups.RequiredGroup;
 import com.zurich.insurance_management.responses.ClientResponse;
@@ -13,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +40,7 @@ public class ClientController {
         return this.service.getClientList();
     }
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a specific client by ID", description = "Fetches a client based on the provided ID.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved the client")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
@@ -50,8 +50,9 @@ public class ClientController {
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public ClientResponse gettClient(@RequestBody ReadDeleteRequest request) {
-        return this.service.getClient(request.getId());
+    public ClientResponse getClient(@PathVariable @Pattern(regexp = "\\d{10}"
+            , message = "El identificador debe contener exactamente 10 dígitos") String id) {
+        return this.service.getClient(id);
     }
 
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -82,15 +83,18 @@ public class ClientController {
         return this.service.updateClient(request, false);
     }
 
-    @DeleteMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Delete a specific client by ID", description = "Delete a client based on the provided ID.")
     @ApiResponse(responseCode = "200", description = "Client successfully deleted")
     @ApiResponse(responseCode = "400", description = "One or more properties fails their validations"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
+    @ApiResponse(responseCode = "406", description = "Controlled error: See the description"
+            , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ApiResponse(responseCode = "500", description = "Unexpected error"
             , content = @Content(schema = @Schema(implementation = GlobalExceptionResponse.class)))
     @ResponseBody
-    public CommonResponse deletetClient(@RequestBody ReadDeleteRequest request) {
-        return this.service.deleteClient(request.getId());
+    public CommonResponse deletetClient(@PathVariable @Pattern(regexp = "\\d{10}"
+            , message = "El identificador debe contener exactamente 10 dígitos") String id) {
+        return this.service.deleteClient(id);
     }
 }

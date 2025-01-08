@@ -3,7 +3,6 @@ package com.zurich.insurance_management.ut.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zurich.insurance_management.controllers.ClientController;
 import com.zurich.insurance_management.requests.ClientRequest;
-import com.zurich.insurance_management.requests.ReadDeleteRequest;
 import com.zurich.insurance_management.responses.ClientResponse;
 import com.zurich.insurance_management.responses.CommonResponse;
 import com.zurich.insurance_management.service.ClientService;
@@ -61,17 +60,16 @@ class ClientControllerTest {
 
     @Test
     void testGetClient() throws Exception {
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId("1234567890");
+        String clientId = "1234567890";
         ClientResponse response = new ClientResponse();
-        response.setId("1234567890");
+        response.setId(clientId);
         response.setFullName("Roque Roque");
-        when(service.getClient("1234567890")).thenReturn(response);
+        when(service.getClient(clientId)).thenReturn(response);
 
-        mockMvc.perform(get("/client").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(get("/client/" + clientId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1234567890"))
+                .andExpect(jsonPath("$.id").value(clientId))
                 .andExpect(jsonPath("$.fullName").value("Roque Roque"));
     }
 
@@ -108,13 +106,12 @@ class ClientControllerTest {
 
     @Test
     void testDeleteClient() throws Exception {
-        ReadDeleteRequest request = new ReadDeleteRequest();
-        request.setId("1234567890");
+        String clientId = "1234567890";
         CommonResponse response = new CommonResponse(true);
         when(service.deleteClient("1234567890")).thenReturn(response);
 
-        mockMvc.perform(delete("/client").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(delete("/client/" + clientId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result").value(true));
     }

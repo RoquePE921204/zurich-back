@@ -12,7 +12,6 @@ import com.zurich.insurance_management.custom.mappers.InsuranceMapper;
 import com.zurich.insurance_management.entities.Insurance;
 import com.zurich.insurance_management.repository.InsuranceRepository;
 import com.zurich.insurance_management.requests.InsuranceRequest;
-import com.zurich.insurance_management.requests.ReadDeleteRequest;
 import com.zurich.insurance_management.responses.CommonResponse;
 import com.zurich.insurance_management.responses.InsuranceResponse;
 import com.zurich.insurance_management.service.InsuranceService;
@@ -24,8 +23,8 @@ public class InsuranceServiceImpl implements InsuranceService {
 	private InsuranceRepository repository;
 
 	@Override
-	public List<InsuranceResponse> getInsuranceList(ReadDeleteRequest request) throws GeneralControlledException {
-		Long idNumber = Long.valueOf(request.getId());
+	public List<InsuranceResponse> getInsuranceList(String id) throws GeneralControlledException {
+		Long idNumber = Long.valueOf(id);
 		List<Insurance> insurances = this.repository.findAllByClientId(idNumber);
 		return InsuranceMapper.entitiesToResponses(insurances);
 	}

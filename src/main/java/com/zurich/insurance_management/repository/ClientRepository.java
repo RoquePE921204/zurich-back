@@ -21,4 +21,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 			"FROM Client c WHERE c.email = :email AND c.id != :id")
 	boolean existsByEmailAndNotId(@Param("email") String email, @Param("id") Long id);
 
+	@Query("SELECT CASE WHEN COUNT(c) > 0 THEN TRUE ELSE FALSE END " +
+			"FROM Client c WHERE c.userId IS NULL AND c.id = :id")
+	boolean existsWithoutUser(@Param("id") Long id);
+
 }

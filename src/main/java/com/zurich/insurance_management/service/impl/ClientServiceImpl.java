@@ -76,6 +76,10 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public CommonResponse deleteClient(String id) throws GeneralControlledException {
 		Long idNumber = Long.valueOf(id);
+		boolean exists = repository.existsWithoutUser(idNumber);
+		if (!exists) {
+			throw new GeneralControlledException("Lo sentimos, el cliente no existe o esta asignado a un usuario");
+		}
 		this.repository.deleteById(idNumber);
 		return new CommonResponse(true);
 	}
