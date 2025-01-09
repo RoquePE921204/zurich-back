@@ -24,8 +24,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "client")
 @Tag(name = "Client", description = "Operations related to clients")
-@CrossOrigin(allowCredentials = "true", origins = "http://localhost:4200"
-        , methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class ClientController {
 
     @Autowired
