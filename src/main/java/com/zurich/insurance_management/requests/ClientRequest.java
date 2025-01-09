@@ -34,7 +34,7 @@ public class ClientRequest implements Serializable {
     @Schema(description = "The client's full name", example = "Roque Roque")
     private String fullName;
 
-    @NotNull(message = "El email es obligatorio")
+    @NotBlank(message = "El email es obligatorio")
     @Email(message = "El email debe ser válido")
     @Schema(description = "The client's email address", example = "roque@example.com")
     private String email;
